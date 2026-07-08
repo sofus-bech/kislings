@@ -1,0 +1,9 @@
+pb.kislings.dk {
+	encode zstd gzip
+
+	# flush_interval -1 disables response buffering so PocketBase's
+	# realtime SSE stream (/api/realtime) reaches clients immediately.
+	reverse_proxy 127.0.0.1:8090 {
+		flush_interval -1
+	}
+}

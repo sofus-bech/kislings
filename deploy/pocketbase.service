@@ -1,0 +1,20 @@
+[Unit]
+Description=PocketBase (Kislings)
+After=network.target
+
+[Service]
+Type=simple
+User=pocketbase
+Group=pocketbase
+# Binds to localhost only; Caddy terminates TLS and proxies to it.
+ExecStart=/usr/local/bin/pocketbase serve --http=127.0.0.1:8090 --dir=__DATA_DIR__/pb_data --migrationsDir=__DATA_DIR__/pb_migrations --hooksDir=__DATA_DIR__/pb_hooks
+Restart=always
+RestartSec=3
+# Hardening
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
