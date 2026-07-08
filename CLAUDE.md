@@ -24,7 +24,7 @@ pb_migrations/        # you create this — schema as migrations
 
 **Homelab variant:** skip Caddy, expose via Cloudflare Tunnel (`cloudflared`) → `127.0.0.1:8090`. Note: Cloudflare buffers by default; SSE still works but confirm events aren't delayed. Ask me before switching to this.
 
-**Testing:** happens on a homelab Proxmox VM (Debian/Ubuntu) treated exactly like the VPS — same `deploy/install.sh` + Caddy path, NOT the Cloudflare Tunnel variant. For TLS in testing, use Caddy's `tls internal` (self-signed) or a LAN hostname unless ports 80/443 are forwarded and `pb.kislings.dk` points at it; production Let's Encrypt needs the domain publicly reachable.
+**Testing:** happens in a homelab Proxmox **LXC container** (Debian 12), provisioned by `deploy/proxmox-lxc.sh` run as root on the Proxmox host — same `deploy/install.sh` + Caddy path as the VPS, NOT the Cloudflare Tunnel variant. For TLS in testing, use Caddy's `tls internal` (self-signed) or a LAN hostname unless ports 80/443 are forwarded and `pb.kislings.dk` points at it; production Let's Encrypt needs the domain publicly reachable.
 
 DNS: `pb.kislings.dk` A-record → VPS IP, managed on Simply.com. Keep fireatwill.org where it is.
 
