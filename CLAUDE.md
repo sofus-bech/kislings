@@ -71,6 +71,13 @@ PocketBase's migration JS API differs across versions. **Check `pocketbase --ver
 - Firewall: expose only 80/443 publicly; PocketBase binds `127.0.0.1:8090`, reached only through Caddy.
 - SSH: key auth only, disable password login and root SSH after setup.
 
+## App (iOS + Android)
+- **React Native + Expo**, one codebase for both platforms. Decided over native SwiftUI/Compose because the design is fully custom-drawn (no native chrome) and the prototype logic is already React.
+- Lives in `app/` in this repo (monorepo).
+- Design source of truth: `design/README.md` (handoff) + `design/Kislings App.dc.html` (prototype — reuse its Danish copy verbatim). Ignore the handoff's "SwiftUI is the natural choice" line; that assumed iOS-only.
+- Backend client: official PocketBase JS SDK (REST + realtime subscriptions).
+- Fonts via expo-google-fonts (Fraunces + Inter). QR, clipboard, PDF viewing via Expo modules. Builds/submission via EAS.
+
 ## Conventions
 - Content is **Danish**. Field names/code English, seed/sample data Danish.
 - Keep it boring and reproducible: pinned version, systemd, one reverse proxy. No Docker unless asked.
