@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="image-slot.js"></script>
+<style>
+body{margin:0;background:#211E1A;font-family:Inter,sans-serif}
+a{color:#C8A268;text-decoration:none}
+a:hover{color:#F5F1EA}
+@keyframes kfade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+*{box-sizing:border-box}
+::-webkit-scrollbar{width:0;height:0}
+</style>
+</helmet>
+
+<div style="min-height:100vh;display:grid;place-items:center;padding:48px 24px">
+<x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" dark="{{ true }}" hint-size="402px,874px">
+
+<div data-screen-label="Kislings app" style="position:relative;height:100%;background:#0D0C0B;color:#F5F1EA;font-family:Inter,sans-serif;display:flex;flex-direction:column;overflow:hidden">
+
+  <!-- ══════════ scrollable content ══════════ -->
+  <div style="flex:1;overflow-y:auto;overflow-x:hidden">
+
+    <!-- ─── HJEM ─── -->
+    <sc-if value="{{ showHjem }}" hint-placeholder-val="{{ true }}">
+    <div data-screen-label="Hjem" style="padding:76px 20px 120px;animation:kfade .4s ease both">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:28px">
+        <div>
+          <div style="font-size:11px;letter-spacing:.14em;color:#9B948A;text-transform:uppercase;margin-bottom:6px">godmorgen</div>
+          <div style="font-family:Fraunces,serif;font-size:32px;font-weight:500;letter-spacing:-.01em;line-height:1.1">{{ customerName }}</div>
+        </div>
+        <div style="font-family:Fraunces,serif;font-size:17px;letter-spacing:.16em;color:#F5F1EA;padding-top:4px">KISLINGS</div>
+      </div>
+
+      <div onClick="{{ openGrinderCoffee }}" style="background:#161412;border:1px solid #2A2622;border-radius:14px;padding:20px;cursor:pointer;margin-bottom:32px" style-active="opacity:.8">
+        <div style="font-size:11px;letter-spacing:.16em;color:#C8A268;margin-bottom:10px">PÅ KVÆRNEN</div>
+        <div style="font-family:Fraunces,serif;font-size:26px;font-weight:500;letter-spacing:-.01em;margin-bottom:6px">{{ grinderName }}</div>
+        <div style="font-size:13px;color:#9B948A;margin-bottom:10px">{{ grinderOrigin }}</div>
+        <div style="font-size:14px;line-height:1.5;color:#F5F1EA">{{ grinderNotes }}</div>
+      </div>
+
+      <div onClick="{{ homeCardClick }}" onPointerDown="{{ homePointerDown }}" onPointerUp="{{ homePointerUp }}" style="background:#161412;border:1px solid #2A2622;border-radius:14px;padding:14px 12px 16px;cursor:pointer;margin-bottom:32px;touch-action:pan-y" style-active="opacity:.8">
+        <div style="font-size:11px;letter-spacing:.16em;color:#9B948A;margin-bottom:12px;padding:0 6px">{{ homeCardLabel }}</div>
+        <div style="display:flex;align-items:center;gap:2px">
+        <div onClick="{{ homePrev }}" style="width:26px;height:28px;flex:none;display:grid;place-items:center;color:{{ homePrevColor }};font-size:16px;cursor:pointer">‹</div>
+        <div style="overflow:hidden;flex:1">
+          <div style="display:flex;width:200%;transform:translateX({{ homeSlideX }});transition:transform .35s ease">
+            <div style="width:50%;display:flex;align-items:center;justify-content:space-between;gap:12px">
+              <div style="display:flex;gap:7px">
+                <sc-for list="{{ stamps }}" as="ms" hint-placeholder-count="10">
+                  <div style="width:16px;height:16px;border:{{ ms.miniBorder }};border-radius:{{ ms.radius }};transform:rotate({{ ms.rot }}deg);opacity:{{ ms.opacity }}"></div>
+                </sc-for>
+              </div>
+              <div style="font-size:12px;color:#9B948A;flex:none">{{ stampShort }}</div>
+            </div>
+            <div style="width:50%;display:flex;align-items:center;justify-content:space-between;gap:12px">
+              <div style="display:flex;gap:7px">
+                <sc-for list="{{ beanStamps }}" as="ms" hint-placeholder-count="6">
+                  <div style="width:16px;height:16px;border:{{ ms.miniBorder }};border-radius:{{ ms.radius }};transform:rotate({{ ms.rot }}deg);opacity:{{ ms.opacity }}"></div>
+                </sc-for>
+              </div>
+              <div style="font-size:12px;color:#9B948A;flex:none">{{ beanShort }}</div>
+            </div>
+          </div>
+        </div>
+        <div onClick="{{ homeNext }}" style="width:26px;height:28px;flex:none;display:grid;place-items:center;color:{{ homeNextColor }};font-size:16px;cursor:pointer">›</div>
+        </div>
+      </div>
+
+      <div style="font-size:11px;letter-spacing:.16em;color:#9B948A;margin-bottom:14px">NYHEDER</div>
+      <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:32px">
+        <sc-for list="{{ homeNews }}" as="n" hint-placeholder-count="1">
+          <div onClick="{{ n.open }}" style="background:#161412;border:1px solid #2A2622;border-radius:14px;overflow:hidden;cursor:pointer" style-active="opacity:.8">
+            <div style="height:150px">
+              <image-slot id="news-{{ n.id }}" shape="rect" placeholder="{{ n.photoHint }}"></image-slot>
+            </div>
+            <div style="padding:16px 18px 18px">
+              <div style="font-family:Fraunces,serif;font-size:19px;font-weight:500;letter-spacing:-.01em;margin-bottom:5px">{{ n.title }}</div>
+              <div style="font-size:12px;color:#9B948A">{{ n.date }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="border-top:1px solid #2A2622;padding-top:18px;display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+        <div>
+          <div style="font-size:11px;letter-spacing:.16em;color:#9B948A;margin-bottom:6px">NÆSTE ARRANGEMENT</div>
+          <div style="font-size:14px">Gårdhavekoncert · fredag kl. 17.30</div>
+        </div>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- ─── KORT ─── -->
+    <sc-if value="{{ showKort }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Kort (loyalty)" style="padding:76px 24px 120px;animation:kfade .4s ease both;display:flex;flex-direction:column;align-items:center;min-height:100%">
+      <div style="font-family:Fraunces,serif;font-size:19px;letter-spacing:.18em;margin:6px 0 34px">KISLINGS</div>
+      <div style="background:#161412;border:1px solid #2A2622;border-radius:16px;padding:24px">{{ qr }}</div>
+      <div style="font-size:13px;color:#9B948A;margin:16px 0 40px">vis koden til baristaen</div>
+
+      <div style="width:100%;background:#161412;border:1px solid #2A2622;border-radius:16px;padding:20px;margin-bottom:16px">
+        <div style="font-size:11px;letter-spacing:.16em;color:#9B948A;margin-bottom:16px;text-align:center">KAFFE</div>
+        <div style="display:grid;grid-template-columns:repeat(5,44px);gap:14px;justify-content:center;margin-bottom:16px">
+          <sc-for list="{{ stamps }}" as="s" hint-placeholder-count="10">
+            <div style="width:44px;height:44px;display:grid;place-items:center">
+              <div style="width:38px;height:38px;border:{{ s.border }};border-radius:{{ s.radius }};box-shadow:{{ s.shadow }};transform:rotate({{ s.rot }}deg);opacity:{{ s.opacity }}"></div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="font-size:13px;text-align:center">{{ stampLine }}</div>
+      </div>
+
+      <div style="width:100%;background:#161412;border:1px solid #2A2622;border-radius:16px;padding:20px;margin-bottom:20px">
+        <div style="font-size:11px;letter-spacing:.16em;color:#9B948A;margin-bottom:16px;text-align:center">BØNNER · 250 G</div>
+        <div style="display:grid;grid-template-columns:repeat(6,44px);gap:12px;justify-content:center;margin-bottom:16px">
+          <sc-for list="{{ beanStamps }}" as="s" hint-placeholder-count="6">
+            <div style="width:44px;height:44px;display:grid;place-items:center">
+              <div style="width:38px;height:38px;border:{{ s.border }};border-radius:{{ s.radius }};box-shadow:{{ s.shadow }};transform:rotate({{ s.rot }}deg);opacity:{{ s.opacity }}"></div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="font-size:13px;text-align:center">{{ beanLine }}</div>
+      </div>
+      <div style="font-size:12px;color:#9B948A;text-align:center">{{ stampSubLine }}</div>
+    </div>
+    </sc-if>
+
+    <!-- ─── KAFFEN ─── -->
+    <sc-if value="{{ showKaffen }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Kaffen" style="padding:76px 20px 120px;animation:kfade .4s ease both">
+      <div style="font-family:Fraunces,serif;font-size:32px;font-weight:500;letter-spacing:-.01em;margin-bottom:24px">Kaffen</div>
+
+      <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:36px">
+        <sc-for list="{{ coffees }}" as="c" hint-placeholder-count="3">
+          <div onClick="{{ c.open }}" style="background:#161412;border:1px solid #2A2622;border-radius:14px;padding:16px;display:flex;gap:14px;align-items:center;cursor:pointer" style-active="opacity:.8">
+            <image-slot id="coffee-{{ c.id }}" shape="rounded" radius="10" placeholder="foto" style="width:64px;height:64px;flex:none"></image-slot>
+            <div style="min-width:0">
+              <sc-if value="{{ c.grinder }}" hint-placeholder-val="{{ false }}">
+                <div style="font-size:10px;letter-spacing:.16em;color:#C8A268;margin-bottom:4px">PÅ KVÆRNEN NU</div>
+              </sc-if>
+              <div style="font-family:Fraunces,serif;font-size:20px;font-weight:500;letter-spacing:-.01em;margin-bottom:3px">{{ c.name }}</div>
+              <div style="font-size:12px;color:#9B948A;margin-bottom:4px">{{ c.origin }}</div>
+              <div style="font-size:13px;color:#F5F1EA;opacity:.85">{{ c.notes }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="font-size:11px;letter-spacing:.16em;color:#9B948A;margin-bottom:14px">BRYGGUIDES</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <sc-for list="{{ guides }}" as="g" hint-placeholder-count="4">
+          <div onClick="{{ g.open }}" style="background:#161412;border:1px solid #2A2622;border-radius:14px;padding:18px 16px;cursor:pointer" style-active="opacity:.8">
+            <div style="font-family:Fraunces,serif;font-size:19px;font-weight:500;margin-bottom:6px">{{ g.name }}</div>
+            <div style="font-size:12px;color:#9B948A">{{ g.meta }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- ─── MENUKORT ─── -->
+    <sc-if value="{{ showMenukort }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Menukort" style="padding:76px 20px 120px;animation:kfade .4s ease both;display:flex;flex-direction:column;min-height:100%">
+      <div style="font-family:Fraunces,serif;font-size:32px;font-weight:500;letter-spacing:-.01em;margin-bottom:8px">Menukort</div>
+      <div style="font-size:13px;color:#9B948A;margin-bottom:28px">vælg sprog — åbner som pdf</div>
+      <div>
+        <sc-for list="{{ menus }}" as="m" hint-placeholder-count="3">
+          <div style="border-top:1px solid #2A2622;padding:28px 4px;display:flex;align-items:baseline;justify-content:space-between;cursor:pointer" style-active="opacity:.7">
+            <div>
+              <div style="font-family:Fraunces,serif;font-size:28px;font-weight:500;letter-spacing:-.01em">{{ m.lang }}</div>
+              <div style="font-size:12px;color:#9B948A;margin-top:4px">{{ m.sub }}</div>
+            </div>
+            <div style="font-size:18px;color:#9B948A">→</div>
+          </div>
+        </sc-for>
+        <div style="border-top:1px solid #2A2622"></div>
+      </div>
+      <div style="margin-top:auto;padding-top:32px;font-size:12px;color:#9B948A;line-height:1.6">fredagsmenu serveres fra 17.30.<br>køkkenet lukker kl. 16.</div>
+    </div>
+    </sc-if>
+
+    <!-- ─── INFO ─── -->
+    <sc-if value="{{ showInfo }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Info" style="padding:76px 20px 120px;animation:kfade .4s ease both">
+      <div style="font-family:Fraunces,serif;font-size:32px;font-weight:500;letter-spacing:-.01em;margin-bottom:24px">Info</div>
+
+      <div style="border-radius:14px;overflow:hidden;height:150px;margin-bottom:14px">
+        <image-slot id="info-map" shape="rect" placeholder="kortudsnit — Perlegade 49"></image-slot>
+      </div>
+      <div style="font-size:14px;margin-bottom:4px">Perlegade 49, 6400 Sønderborg</div>
+      <div style="font-size:12px;color:#9B948A;margin-bottom:32px">to minutter fra Rådhustorvet</div>
+
+      <div style="font-size:11px;letter-spacing:.16em;color:#9B948A;margin-bottom:6px">ÅBNINGSTIDER</div>
+      <div style="margin-bottom:32px">
+        <sc-for list="{{ hours }}" as="h" hint-placeholder-count="4">
+          <div style="border-bottom:1px solid #2A2622;padding:14px 0">
+            <div style="display:flex;justify-content:space-between;font-size:14px">
+              <div>{{ h.day }}</div>
+              <div style="color:#F5F1EA">{{ h.time }}</div>
+            </div>
+            <sc-if value="{{ h.note }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:12px;color:#9B948A;margin-top:4px">{{ h.note }}</div>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="background:#161412;border:1px solid #2A2622;border-radius:14px;padding:18px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px">
+        <div>
+          <div style="font-size:11px;letter-spacing:.16em;color:#9B948A;margin-bottom:8px">WI-FI</div>
+          <div style="font-size:15px;margin-bottom:2px">Kislings Gæst</div>
+          <div style="font-size:13px;color:#9B948A;font-family:ui-monospace,monospace">kaffetid</div>
+        </div>
+        <button onClick="{{ copyWifi }}" style="background:none;border:1px solid #2A2622;border-radius:999px;color:#F5F1EA;font-family:Inter,sans-serif;font-size:12px;padding:9px 16px;cursor:pointer" style-active="opacity:.7">{{ wifiLabel }}</button>
+      </div>
+
+      <div style="font-size:13px;color:#9B948A;line-height:1.6;margin-bottom:32px">bordreservation i caféen, min. 4 personer — ring eller skriv.</div>
+
+      <div style="font-size:11px;letter-spacing:.16em;color:#9B948A;margin-bottom:6px">KONTAKT</div>
+      <div>
+        <sc-for list="{{ contacts }}" as="k" hint-placeholder-count="3">
+          <div style="border-bottom:1px solid #2A2622;padding:14px 0;display:flex;justify-content:space-between;font-size:14px">
+            <div style="color:#9B948A;font-size:12px;letter-spacing:.06em;text-transform:uppercase;align-self:center">{{ k.label }}</div>
+            <div>{{ k.value }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    </sc-if>
+  </div>
+
+  <!-- ══════════ detail overlays ══════════ -->
+  <sc-if value="{{ showCoffeeDetail }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Kaffe-detalje" style="position:absolute;inset:0;z-index:50;background:#0D0C0B;overflow-y:auto;animation:kfade .35s ease both">
+    <div style="position:relative;height:320px">
+      <image-slot id="detail-{{ d.id }}" shape="rect" placeholder="{{ d.photoHint }}"></image-slot>
+      <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,12,11,.45) 0%,rgba(13,12,11,0) 30%,rgba(13,12,11,0) 55%,rgba(13,12,11,.9) 100%);pointer-events:none"></div>
+      <div onClick="{{ back }}" style="position:absolute;top:64px;left:16px;width:36px;height:36px;border-radius:50%;background:rgba(13,12,11,.55);border:1px solid #2A2622;display:grid;place-items:center;font-size:16px;color:#F5F1EA;cursor:pointer;backdrop-filter:blur(8px)">←</div>
+    </div>
+    <div style="padding:0 22px 110px;margin-top:-36px;position:relative">
+      <sc-if value="{{ d.grinder }}" hint-placeholder-val="{{ false }}">
+        <div style="font-size:11px;letter-spacing:.16em;color:#C8A268;margin-bottom:10px">PÅ KVÆRNEN NU</div>
+      </sc-if>
+      <div style="font-family:Fraunces,serif;font-size:34px;font-weight:500;letter-spacing:-.01em;line-height:1.1;margin-bottom:8px">{{ d.name }}</div>
+      <div style="font-size:13px;color:#9B948A;margin-bottom:18px">{{ d.origin }}</div>
+      <div style="border-top:1px solid #2A2622;border-bottom:1px solid #2A2622;padding:14px 0;font-size:14px;margin-bottom:22px">{{ d.notes }}</div>
+      <div style="font-size:15px;line-height:1.7;color:#F5F1EA;opacity:.9">{{ d.story }}</div>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ showGuideDetail }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Brygguide" style="position:absolute;inset:0;z-index:50;background:#0D0C0B;overflow-y:auto;animation:kfade .35s ease both">
+    <div style="padding:70px 22px 110px">
+      <div onClick="{{ back }}" style="width:36px;height:36px;border-radius:50%;background:#161412;border:1px solid #2A2622;display:grid;place-items:center;font-size:16px;cursor:pointer;margin-bottom:22px">←</div>
+      <div style="font-size:11px;letter-spacing:.16em;color:#9B948A;margin-bottom:8px">BRYGGUIDE</div>
+      <div style="font-family:Fraunces,serif;font-size:34px;font-weight:500;letter-spacing:-.01em;margin-bottom:24px">{{ d.name }}</div>
+
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);border:1px solid #2A2622;border-radius:14px;padding:18px 8px;margin-bottom:30px;text-align:center">
+        <div><div style="font-size:10px;letter-spacing:.14em;color:#9B948A;margin-bottom:6px">RATIO</div><div style="font-family:Fraunces,serif;font-size:17px">{{ d.ratio }}</div></div>
+        <div style="border-left:1px solid #2A2622"><div style="font-size:10px;letter-spacing:.14em;color:#9B948A;margin-bottom:6px">DOSIS</div><div style="font-family:Fraunces,serif;font-size:17px">{{ d.dose }}</div></div>
+        <div style="border-left:1px solid #2A2622"><div style="font-size:10px;letter-spacing:.14em;color:#9B948A;margin-bottom:6px">VAND</div><div style="font-family:Fraunces,serif;font-size:17px">{{ d.water }}</div></div>
+        <div style="border-left:1px solid #2A2622"><div style="font-size:10px;letter-spacing:.14em;color:#9B948A;margin-bottom:6px">TEMP</div><div style="font-family:Fraunces,serif;font-size:17px">{{ d.temp }}</div></div>
+      </div>
+
+      <div style="display:flex;flex-direction:column">
+        <sc-for list="{{ guideSteps }}" as="st" hint-placeholder-count="4">
+          <div style="display:flex;gap:16px;border-bottom:1px solid #2A2622;padding:16px 0;align-items:baseline">
+            <div style="font-family:Fraunces,serif;font-size:15px;color:#9B948A;flex:none;width:20px">{{ st.n }}</div>
+            <div style="font-size:14px;line-height:1.55;flex:1">{{ st.text }}</div>
+            <div style="font-size:12px;color:#9B948A;font-family:ui-monospace,monospace;flex:none">{{ st.time }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ showNewsDetail }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Nyheds-detalje" style="position:absolute;inset:0;z-index:50;background:#0D0C0B;overflow-y:auto;animation:kfade .35s ease both">
+    <div style="position:relative;height:300px">
+      <image-slot id="newsdetail-{{ d.id }}" shape="rect" placeholder="{{ d.photoHint }}"></image-slot>
+      <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,12,11,.45) 0%,rgba(13,12,11,0) 30%,rgba(13,12,11,0) 55%,rgba(13,12,11,.9) 100%);pointer-events:none"></div>
+      <div onClick="{{ back }}" style="position:absolute;top:64px;left:16px;width:36px;height:36px;border-radius:50%;background:rgba(13,12,11,.55);border:1px solid #2A2622;display:grid;place-items:center;font-size:16px;color:#F5F1EA;cursor:pointer;backdrop-filter:blur(8px)">←</div>
+    </div>
+    <div style="padding:0 22px 110px;margin-top:-30px;position:relative">
+      <div style="font-size:11px;letter-spacing:.14em;color:#9B948A;margin-bottom:10px;text-transform:uppercase">{{ d.date }}</div>
+      <div style="font-family:Fraunces,serif;font-size:30px;font-weight:500;letter-spacing:-.01em;line-height:1.15;margin-bottom:20px">{{ d.title }}</div>
+      <div style="font-size:15px;line-height:1.7;opacity:.9">{{ d.body }}</div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ══════════ tab bar ══════════ -->
+  <div style="position:absolute;left:0;right:0;bottom:0;z-index:55;background:rgba(13,12,11,.92);backdrop-filter:blur(14px);border-top:1px solid #2A2622;display:flex;padding:10px 4px 26px">
+    <div onClick="{{ goHjem }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;padding-top:2px">
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="{{ cHjem }}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"></path><path d="M5.5 9.5V20h13V9.5"></path></svg>
+      <div style="font-size:10px;font-weight:500;color:{{ cHjem }}">Hjem</div>
+    </div>
+    <div onClick="{{ goKort }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;padding-top:2px">
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="{{ cKort }}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2.5"></rect><path d="M2.5 9.5h19"></path></svg>
+      <div style="font-size:10px;font-weight:500;color:{{ cKort }}">Kort</div>
+    </div>
+    <div onClick="{{ goKaffen }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;padding-top:2px">
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="{{ cKaffen }}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13v5a5 5 0 01-5 5H9a5 5 0 01-5-5V8z"></path><path d="M17 9.5h1.5a2.5 2.5 0 010 5H17"></path></svg>
+      <div style="font-size:10px;font-weight:500;color:{{ cKaffen }}">Kaffen</div>
+    </div>
+    <div onClick="{{ goMenukort }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;padding-top:2px">
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="{{ cMenukort }}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"></path><path d="M4 12h16"></path><path d="M4 18h10"></path></svg>
+      <div style="font-size:10px;font-weight:500;color:{{ cMenukort }}">Menukort</div>
+    </div>
+    <div onClick="{{ goInfo }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;padding-top:2px">
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="{{ cInfo }}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5"></path><path d="M12 8v.01"></path></svg>
+      <div style="font-size:10px;font-weight:500;color:{{ cInfo }}">Info</div>
+    </div>
+  </div>
+
+</div>
+</x-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:500,&quot;height&quot;:980},&quot;customerName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Mette&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Kunde&quot;},&quot;stampsFilled&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:6,&quot;min&quot;:0,&quot;max&quot;:10,&quot;step&quot;:1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Kunde&quot;},&quot;beansFilled&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:2,&quot;min&quot;:0,&quot;max&quot;:6,&quot;step&quot;:1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Kunde&quot;}}">
+class Component extends DCLogic {
+  state = { tab: 'hjem', detail: null, copied: false, homeCard: 0 };
+
+  coffees = [
+    { id: 'esperanza', name: 'La Esperanza', origin: 'Colombia · vasket', notes: 'rød frugt, karamel, ren eftersmag', grinder: true, photoHint: 'foto: kaffebær / farm',
+      story: 'Fra familien Trujillos farm i Huila, 1.750 meter over havet. Plukket i hånden, vasket og tørret langsomt. Vi rister den lyst, så frugten får plads. Kontra brænder bønnerne — du drikker resultatet.' },
+    { id: 'duromina', name: 'Duromina', origin: 'Etiopien · vasket', notes: 'bergamot, abrikos, te-agtig', grinder: false, photoHint: 'foto: pour-over',
+      story: 'Et kooperativ i Agaro i det vestlige Etiopien. Klassisk vasket profil — floral og let som te. Bedst som V60, uden mælk.' },
+    { id: 'silvestre', name: 'São Silvestre', origin: 'Brasilien · natural', notes: 'nødder, mørk chokolade, blød', grinder: false, photoHint: 'foto: espresso',
+      story: 'Cerrado Mineiro, Brasilien. Natural-tørret på terrasser i solen. Blød og rund — vores go-to til espresso og god med mælk.' },
+  ];
+
+  news = [
+    { id: 'koncert', title: 'Gårdhavekoncert på fredag', date: '12. juli 2026', photoHint: 'foto: gårdhaven',
+      body: 'Fredag åbner vi gårdhaven for en stille aften med trioen fra Alsion. Musik fra 17.30, fredagsmenuen serveres samtidig. Der er plads til omkring 40 — kom i god tid, eller reservér et bord hvis I er fire eller flere.' },
+    { id: 'colombia', title: 'Ny kaffe fra Colombia', date: '4. juli 2026', photoHint: 'foto: sække / bønner',
+      body: 'La Esperanza fra Huila er landet og ligger på kværnen nu. Rød frugt, karamel og en ren eftersmag. Vi rister selv profilerne. Kontra brænder bønnerne. Du drikker resultatet.' },
+  ];
+
+  guides = [
+    { id: 'v60', name: 'V60', meta: '1:16 · ca. 2.45 min', ratio: '1:16', dose: '15 g', water: '240 ml', temp: '94°',
+      steps: [
+        { n: '1', text: 'Skyl filteret med varmt vand og hæld det ud.', time: '' },
+        { n: '2', text: 'Tilsæt 15 g mellemfin kaffe. Nulstil vægten.', time: '' },
+        { n: '3', text: 'Hæld 45 ml vand og lad kaffen blomstre.', time: '0.00' },
+        { n: '4', text: 'Hæld roligt op til 150 ml i cirkler.', time: '0.45' },
+        { n: '5', text: 'Fyld op til 240 ml. Lad det løbe igennem.', time: '1.30' },
+        { n: '6', text: 'Færdig når lejet er fladt.', time: '2.45' },
+      ]},
+    { id: 'aeropress', name: 'AeroPress', meta: '1:15 · ca. 1.30 min', ratio: '1:15', dose: '14 g', water: '210 ml', temp: '92°',
+      steps: [
+        { n: '1', text: 'Saml AeroPressen omvendt. Skyl filteret.', time: '' },
+        { n: '2', text: 'Tilsæt 14 g fintmalet kaffe og 210 ml vand.', time: '0.00' },
+        { n: '3', text: 'Rør tre gange. Sæt låget på.', time: '0.15' },
+        { n: '4', text: 'Vent. Vend den over koppen.', time: '1.00' },
+        { n: '5', text: 'Pres langsomt — cirka 20 sekunder.', time: '1.10' },
+      ]},
+    { id: 'stempel', name: 'Stempelkande', meta: '1:15 · 4 min', ratio: '1:15', dose: '30 g', water: '450 ml', temp: '95°',
+      steps: [
+        { n: '1', text: 'Tilsæt 30 g groftmalet kaffe.', time: '' },
+        { n: '2', text: 'Hæld 450 ml vand over. Rør forsigtigt.', time: '0.00' },
+        { n: '3', text: 'Læg låget løst på. Vent.', time: '0.30' },
+        { n: '4', text: 'Skum toppen af med en ske.', time: '4.00' },
+        { n: '5', text: 'Pres stemplet halvt ned og skænk.', time: '4.30' },
+      ]},
+    { id: 'moka', name: 'Moka', meta: 'fyld kurven · medium varme', ratio: '—', dose: 'fuld kurv', water: 'til ventilen', temp: 'medium',
+      steps: [
+        { n: '1', text: 'Fyld underdelen med varmt vand til ventilen.', time: '' },
+        { n: '2', text: 'Fyld kurven med fintmalet kaffe. Pres ikke.', time: '' },
+        { n: '3', text: 'Skru sammen og sæt på medium varme.', time: '' },
+        { n: '4', text: 'Tag den af, når det begynder at gurgle.', time: '' },
+      ]},
+  ];
+
+  menus = [
+    { lang: 'Dansk', sub: 'menukort · pdf' },
+    { lang: 'English', sub: 'menu · pdf' },
+    { lang: 'Deutsch', sub: 'speisekarte · pdf' },
+  ];
+
+  hours = [
+    { day: 'mandag–torsdag', time: '08–18', note: '' },
+    { day: 'fredag', time: '08–21', note: 'køkkenet lukker 16 · fredagsmenu fra 17.30' },
+    { day: 'lørdag', time: '08–18', note: '' },
+    { day: 'søndag', time: 'lukket', note: 'åbent 9–17 i december' },
+  ];
+
+  contacts = [
+    { label: 'mail', value: 'info@kislings.dk' },
+    { label: 'instagram', value: '@kislings' },
+    { label: 'facebook', value: '/kislings' },
+  ];
+
+  buildQR() {
+    const n = 25, cell = 8, size = n * cell;
+    const rnd = (x, y) => {
+      let h = (x * 73856093) ^ (y * 19349663) ^ 0x5bd1e995;
+      h = Math.imul(h ^ (h >>> 13), 1274126177);
+      return ((h >>> 8) % 100) < 46;
+    };
+    const inFinder = (x, y) => (x < 8 && y < 8) || (x > n - 9 && y < 8) || (x < 8 && y > n - 9);
+    const kids = [];
+    for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+      if (!inFinder(x, y) && rnd(x, y)) {
+        kids.push(React.createElement('rect', { key: x + '-' + y, x: x * cell, y: y * cell, width: cell, height: cell }));
+      }
+    }
+    const finder = (fx, fy, i) => [
+      React.createElement('rect', { key: 'f' + i + 'a', x: fx * cell, y: fy * cell, width: 7 * cell, height: 7 * cell, fill: 'none', stroke: '#F5F1EA', strokeWidth: cell }),
+      React.createElement('rect', { key: 'f' + i + 'b', x: (fx + 2) * cell, y: (fy + 2) * cell, width: 3 * cell, height: 3 * cell }),
+    ];
+    return React.createElement('svg', { width: 176, height: 176, viewBox: `-${cell / 2} -${cell / 2} ${size + cell} ${size + cell}`, fill: '#F5F1EA', style: { display: 'block' } },
+      ...kids, ...finder(0.5, 0.5, 0), ...finder(n - 7.5, 0.5, 1), ...finder(0.5, n - 7.5, 2));
+  }
+
+  qr = this.buildQR();
+
+  radii = ['46% 54% 52% 48%', '52% 48% 47% 53%', '49% 51% 54% 46%', '53% 47% 49% 51%', '47% 53% 51% 49%',
+           '51% 49% 46% 54%', '48% 52% 53% 47%', '54% 46% 48% 52%', '50% 50% 52% 48%', '52% 48% 50% 50%'];
+  rots = [8, -12, 20, -5, 14, -18, 3, -9, 16, 0];
+
+  go(tab) { this.setState({ tab, detail: null }); }
+
+  renderVals() {
+    const { tab, detail, copied } = this.state;
+    const filled = Math.max(0, Math.min(10, this.props.stampsFilled ?? 6));
+    const left = 10 - filled;
+
+    const makeStamps = (count, total) => Array.from({ length: total }, (_, i) => {
+      const isFilled = i < count;
+      const isTenth = i === total - 1 && !isFilled;
+      return {
+        border: isFilled ? '3px solid #C8A268' : isTenth ? '1px dashed rgba(200,162,104,.55)' : '1px solid #2A2622',
+        miniBorder: isFilled ? '1.5px solid #C8A268' : isTenth ? '1px dashed rgba(200,162,104,.55)' : '1px solid #2A2622',
+        shadow: isFilled ? 'inset 0 0 0 1.5px rgba(200,162,104,.3)' : isTenth ? '0 0 14px rgba(200,162,104,.22)' : 'none',
+        radius: this.radii[i],
+        rot: this.rots[i],
+        opacity: isFilled ? .92 : 1,
+      };
+    });
+    const stamps = makeStamps(filled, 10);
+    const beansFilled = Math.max(0, Math.min(6, this.props.beansFilled ?? 2));
+    const beansLeft = 6 - beansFilled;
+
+    const dtype = detail && detail.type;
+    const d = detail && detail.item;
+
+    return {
+      customerName: this.props.customerName ?? 'Mette',
+      showHjem: tab === 'hjem', showKort: tab === 'kort', showKaffen: tab === 'kaffen',
+      showMenukort: tab === 'menukort', showInfo: tab === 'info',
+      showCoffeeDetail: dtype === 'coffee', showGuideDetail: dtype === 'guide', showNewsDetail: dtype === 'news',
+      d, guideSteps: dtype === 'guide' ? d.steps : [],
+
+      goHjem: () => this.go('hjem'), goKort: () => this.go('kort'), goKaffen: () => this.go('kaffen'),
+      goMenukort: () => this.go('menukort'), goInfo: () => this.go('info'),
+      back: () => this.setState({ detail: null }),
+
+      cHjem: tab === 'hjem' ? '#C8A268' : '#9B948A',
+      cKort: tab === 'kort' ? '#C8A268' : '#9B948A',
+      cKaffen: tab === 'kaffen' ? '#C8A268' : '#9B948A',
+      cMenukort: tab === 'menukort' ? '#C8A268' : '#9B948A',
+      cInfo: tab === 'info' ? '#C8A268' : '#9B948A',
+
+      grinderName: this.coffees[0].name,
+      grinderOrigin: this.coffees[0].origin,
+      grinderNotes: this.coffees[0].notes,
+      openGrinderCoffee: () => this.setState({ detail: { type: 'coffee', item: this.coffees[0] } }),
+
+      coffees: this.coffees.map(c => ({ ...c, open: () => this.setState({ detail: { type: 'coffee', item: c } }) })),
+      news: this.news.map(n => ({ ...n, open: () => this.setState({ detail: { type: 'news', item: n } }) })),
+      homeNews: this.news.slice(0, 1).map(n => ({ ...n, open: () => this.setState({ detail: { type: 'news', item: n } }) })),
+      stampShort: `${filled} af 10`,
+      beanShort: `${beansFilled} af 6`,
+      homeCardLabel: this.state.homeCard === 0 ? 'KAFFE' : 'BØNNER · 250 G',
+      homeSlideX: this.state.homeCard === 0 ? '0%' : '-50%',
+      homePrevColor: this.state.homeCard === 0 ? '#2A2622' : '#F5F1EA',
+      homeNextColor: this.state.homeCard === 0 ? '#F5F1EA' : '#2A2622',
+      homePrev: (e) => { e.stopPropagation(); this.setState({ homeCard: 0 }); },
+      homeNext: (e) => { e.stopPropagation(); this.setState({ homeCard: 1 }); },
+      homePointerDown: (e) => { this._sx = e.clientX; this._swiped = false; },
+      homePointerUp: (e) => {
+        const dx = e.clientX - (this._sx ?? e.clientX);
+        if (Math.abs(dx) > 30) { this._swiped = true; this.setState({ homeCard: dx < 0 ? 1 : 0 }); }
+      },
+      homeCardClick: () => { if (this._swiped) { this._swiped = false; return; } this.go('kort'); },
+      guides: this.guides.map(g => ({ ...g, open: () => this.setState({ detail: { type: 'guide', item: g } }) })),
+      menus: this.menus, hours: this.hours, contacts: this.contacts,
+
+      qr: this.qr,
+      stamps,
+      stampLine: filled >= 10 ? '10 af 10 — din næste kaffe er gratis' : `${filled} af 10 — ${left} ${left === 1 ? 'kaffe' : 'kaffer'} til en gratis`,
+      stampSubLine: 'stemplet ved kassen — kop for kop, pose for pose',
+      beanStamps: makeStamps(beansFilled, 6),
+      beanLine: beansFilled >= 6 ? '6 af 6 — din næste pose er gratis' : `${beansFilled} af 6 — ${beansLeft} ${beansLeft === 1 ? 'pose' : 'poser'} til en gratis`,
+
+      wifiLabel: copied ? 'kopieret' : 'kopiér',
+      copyWifi: () => {
+        try { navigator.clipboard.writeText('kaffetid'); } catch (e) {}
+        this.setState({ copied: true });
+        clearTimeout(this._ct);
+        this._ct = setTimeout(() => this.setState({ copied: false }), 1800);
+      },
+    };
+  }
+}
+</script>
+</body>
+</html>
