@@ -84,7 +84,7 @@ cust_token() {
 }
 
 # a valid stamp body — so the ONLY thing that can reject it is the create rule
-BODY="{\"user\":\"$CUST_ID\",\"staff\":\"$CUST_ID\",\"action\":\"stamp\"}"
+BODY="{\"user\":\"$CUST_ID\",\"staff\":\"$CUST_ID\",\"track\":\"coffee\",\"action\":\"stamp\"}"
 
 CTOK=$(cust_token)
 CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$BASE/api/collections/stamps/records" \
