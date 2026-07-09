@@ -89,8 +89,14 @@ BODY="{\"user\":\"$CUST_ID\",\"staff\":\"$CUST_ID\",\"action\":\"stamp\"}"
 CTOK=$(cust_token)
 CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$BASE/api/collections/stamps/records" \
   -H "Authorization: $CTOK" -H "Content-Type: application/json" -d "$BODY")
-[ "$CODE" = "403" ] && ok "customer blocked from creating a stamp (403)" \
-                    || bad "customer create returned $CODE (expected 403)"
+# PocketBase surfaces a failed create rule as 400 ("Failed to create record"),
+# not 403 — any 4xx means the customer was blocked. The staff attempt below
+# uses the SAME body and must succeed, which is what disambiguates a rule
+# denial here from a mere body-validation error.
+case "$CODE" in
+  4*) ok "customer blocked from creating a stamp ($CODE)" ;;
+  *)  bad "customer create returned $CODE (expected a 4xx block)" ;;
+esac
 
 # promote to staff, re-auth (token must carry the new role), retry
 curl -s -X PATCH "$BASE/api/collections/users/records/$CUST_ID" -H "$AUTH" \
