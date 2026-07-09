@@ -29,6 +29,11 @@ PB_DOMAIN="${PB_DOMAIN:-pb.kislings.dk}"
 # 0 = real Let's Encrypt — only works if PB_DOMAIN publicly resolves to this
 #     container and ports 80/443 are forwarded to it.
 TLS_INTERNAL="${TLS_INTERNAL:-1}"
+# 1 = expose PocketBase directly on the LAN at :8090 (via a systemd drop-in),
+#     so the Expo dev app can hit http://<container-ip>:8090 without the
+#     self-signed cert. TESTING ONLY — the production install.sh keeps
+#     PocketBase bound to 127.0.0.1 behind Caddy. Set 0 to match production.
+PB_LAN="${PB_LAN:-1}"
 
 command -v pct >/dev/null || { echo "pct not found — run this on the Proxmox host."; exit 1; }
 [ -f "$REPO_ROOT/deploy/install.sh" ] || { echo "deploy/install.sh not found — run from a repo checkout."; exit 1; }
@@ -85,7 +90,7 @@ SETUP="$(mktemp)"
 cat > "$SETUP" <<'INSIDE'
 #!/usr/bin/env bash
 set -euo pipefail
-PB_VERSION="$1"; PB_DATA_DIR="$2"; PB_DOMAIN="$3"; TLS_INTERNAL="$4"
+PB_VERSION="$1"; PB_DATA_DIR="$2"; PB_DOMAIN="$3"; TLS_INTERNAL="$4"; PB_LAN="$5"
 export DEBIAN_FRONTEND=noninteractive
 
 apt-get update
@@ -105,6 +110,21 @@ printf 'PB_VERSION=%s\nPB_DATA_DIR=%s\n' "$PB_VERSION" "$PB_DATA_DIR" > .env
 
 bash deploy/install.sh
 
+# TESTING-ONLY: rebind PocketBase to the LAN so the Expo dev app can reach it
+# directly at http://<container-ip>:8090. A systemd drop-in overrides only the
+# ExecStart line — deploy/install.sh and pocketbase.service stay production-safe
+# (127.0.0.1). Remove this drop-in (or set PB_LAN=0) to match production.
+if [ "$PB_LAN" = "1" ]; then
+  mkdir -p /etc/systemd/system/pocketbase.service.d
+  cat > /etc/systemd/system/pocketbase.service.d/lan.conf <<CONF
+[Service]
+ExecStart=
+ExecStart=/usr/local/bin/pocketbase serve --http=0.0.0.0:8090 --dir=$PB_DATA_DIR/pb_data --migrationsDir=$PB_DATA_DIR/pb_migrations --hooksDir=$PB_DATA_DIR/pb_hooks
+CONF
+  systemctl daemon-reload
+  systemctl restart pocketbase
+fi
+
 # Caddyfile: swap in the requested domain; self-signed TLS for homelab
 cp deploy/Caddyfile /etc/caddy/Caddyfile
 sed -i "1s|^[^ ]*|$PB_DOMAIN|" /etc/caddy/Caddyfile
@@ -119,7 +139,7 @@ pct push "$CTID" "$SETUP" /root/kislings-setup.sh
 rm -f "$SETUP"
 
 echo "==> Installing PocketBase $PB_VERSION + Caddy inside CT"
-pct exec "$CTID" -- bash /root/kislings-setup.sh "$PB_VERSION" "$PB_DATA_DIR" "$PB_DOMAIN" "$TLS_INTERNAL"
+pct exec "$CTID" -- bash /root/kislings-setup.sh "$PB_VERSION" "$PB_DATA_DIR" "$PB_DOMAIN" "$TLS_INTERNAL" "$PB_LAN"
 pct exec "$CTID" -- rm /root/kislings-setup.sh
 
 CT_IP="$(pct exec "$CTID" -- hostname -I | awk '{print $1}')"
