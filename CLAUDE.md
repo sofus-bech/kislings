@@ -46,6 +46,7 @@ recipes    method(select: V60/AeroPress/Stempelkande/Moka),
 
 users      (built-in auth)  role(select: customer/staff)
 stamps     user(rel→users), staff(rel→users),
+           track(select: coffee/beans),
            action(select: stamp/redeem), created(auto)
 ```
 
@@ -55,7 +56,13 @@ stamps     user(rel→users), staff(rel→users),
 - `users`: default auth rules; a customer can read only their own record.
 
 ### Loyalty logic (no counter field — derive it)
-Stamps since the user's last `redeem` = current count. Hit 10 → staff creates a `redeem` row → count resets. Full audit trail for free. Don't store a mutable `count`.
+**Two independent tracks**, distinguished by `stamps.track`:
+- `coffee` — a stamp per cup, free coffee at **10**.
+- `beans` — a stamp per 250 g bag, free bag at **6**.
+
+Each track's current count = the user's `stamp` rows on that track since their last `redeem` on that same track. Hit the goal (10 / 6) → staff creates a `redeem` row on that track → that track's count resets; the other track is untouched. Full audit trail for free. Don't store a mutable `count`, and don't mix the tracks when counting — always filter by `track`.
+
+The app surfaces both as separate cards (KAFFE = 10, BØNNER · 250 G = 6); see `design/README.md`.
 
 ## Realtime (must not regress)
 The app opens one SSE stream on `/api/realtime`, subscribes to `coffees` (later `news`, `events`). Any change → app re-fetches. For this to be instant:
