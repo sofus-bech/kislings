@@ -1,48 +1,51 @@
 /**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
+ * Kislings design tokens. Fixed white-on-black, warm — see design/README.md.
+ * The app is dark-only, so both color schemes map to the same palette and the
+ * scaffold's themed components / navigation theming stay on-brand regardless of
+ * the OS setting.
  */
 
 import '@/global.css';
 
 import { Platform } from 'react-native';
 
-export const Colors = {
-  light: {
-    text: '#000000',
-    background: '#ffffff',
-    backgroundElement: '#F0F0F3',
-    backgroundSelected: '#E0E1E6',
-    textSecondary: '#60646C',
-  },
-  dark: {
-    text: '#ffffff',
-    background: '#000000',
-    backgroundElement: '#212225',
-    backgroundSelected: '#2E3135',
-    textSecondary: '#B0B4BA',
-  },
+/** The six fixed brand colors. Never pure #000/#fff. */
+export const palette = {
+  bg: '#0D0C0B', // soft warm black — app background
+  surface: '#161412', // raised cards
+  text: '#F5F1EA', // warm off-white — primary text
+  textDim: '#9B948A', // secondary text, inactive tabs
+  gold: '#C8A268', // single accent, "crema" gold
+  hairline: '#2A2622', // 1px dividers / card borders
 } as const;
+
+const kislings = {
+  text: palette.text,
+  background: palette.bg,
+  backgroundElement: palette.surface,
+  backgroundSelected: palette.hairline,
+  textSecondary: palette.textDim,
+};
+
+export const Colors = { light: kislings, dark: kislings } as const;
 
 export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
 
+/** expo-google-fonts family names (loaded in the root layout). */
+export const font = {
+  serifMedium: 'Fraunces_500Medium',
+  serifSemi: 'Fraunces_600SemiBold',
+  sans: 'Inter_400Regular',
+  sansMedium: 'Inter_500Medium',
+  sansSemi: 'Inter_600SemiBold',
+} as const;
+
+export const radius = { card: 14, loyalty: 16 } as const;
+
+// Kept for the scaffold's themed-text/themed-view components.
 export const Fonts = Platform.select({
-  ios: {
-    /** iOS `UIFontDescriptorSystemDesignDefault` */
-    sans: 'system-ui',
-    /** iOS `UIFontDescriptorSystemDesignSerif` */
-    serif: 'ui-serif',
-    /** iOS `UIFontDescriptorSystemDesignRounded` */
-    rounded: 'ui-rounded',
-    /** iOS `UIFontDescriptorSystemDesignMonospaced` */
-    mono: 'ui-monospace',
-  },
-  default: {
-    sans: 'normal',
-    serif: 'serif',
-    rounded: 'normal',
-    mono: 'monospace',
-  },
+  ios: { sans: 'system-ui', serif: 'ui-serif', rounded: 'ui-rounded', mono: 'ui-monospace' },
+  default: { sans: 'normal', serif: 'serif', rounded: 'normal', mono: 'monospace' },
   web: {
     sans: 'var(--font-display)',
     serif: 'var(--font-serif)',
