@@ -58,10 +58,7 @@ export function Stamp({ size, filled, free = false, index = 0 }: Props) {
           borderWidth: 1,
           borderStyle: 'dashed',
           borderColor: 'rgba(200,162,104,0.55)',
-          shadowColor: palette.gold,
-          shadowOpacity: 0.22,
-          shadowRadius: 14,
-          shadowOffset: { width: 0, height: 0 },
+          boxShadow: '0 0 14px rgba(200,162,104,0.22)',
         }}
       />
     );
