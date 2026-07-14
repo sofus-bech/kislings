@@ -12,6 +12,7 @@ import { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { palette } from '@/constants/theme';
+import { AuthProvider } from '@/lib/auth';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -33,16 +34,18 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <StatusBar style="light" />
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          contentStyle: { backgroundColor: palette.bg },
-        }}>
-        <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="coffee/[id]" />
-        <Stack.Screen name="news/[id]" />
-        <Stack.Screen name="guide/[id]" />
-      </Stack>
+      <AuthProvider>
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            contentStyle: { backgroundColor: palette.bg },
+          }}>
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="coffee/[id]" />
+          <Stack.Screen name="news/[id]" />
+          <Stack.Screen name="guide/[id]" />
+        </Stack>
+      </AuthProvider>
     </SafeAreaProvider>
   );
 }

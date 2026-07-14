@@ -47,6 +47,12 @@ function TabIcon({ name, color }: { name: string; color: string }) {
           <Path d="M12 8v.01" {...common} />
         </>
       )}
+      {name === 'profil' && (
+        <>
+          <Circle cx={12} cy={8} r={3.2} {...common} />
+          <Path d="M5.5 20a6.5 6.5 0 0113 0" {...common} />
+        </>
+      )}
     </Svg>
   );
 }

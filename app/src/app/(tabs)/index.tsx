@@ -6,10 +6,12 @@ import { Stamp, stampCells } from '@/components/stamp';
 import { Eyebrow, Screen, Serif } from '@/components/ui';
 import { font, palette, radius } from '@/constants/theme';
 import { customer, nextEvent } from '@/data/content';
+import { useAuth } from '@/lib/auth';
 import { useCoffees, useNews } from '@/lib/live';
 
 export default function Hjem() {
   const router = useRouter();
+  const { user } = useAuth();
   const coffees = useCoffees();
   const news = useNews();
   const grinder = coffees.find((c) => c.grinder) ?? coffees[0];
@@ -21,7 +23,7 @@ export default function Hjem() {
       <View style={styles.header}>
         <View>
           <Eyebrow>godmorgen</Eyebrow>
-          <Serif style={styles.name}>{customer.name}</Serif>
+          <Serif style={styles.name}>{user?.name?.split(' ')[0] || 'gæst'}</Serif>
         </View>
         <Text style={styles.wordmark}>KISLINGS</Text>
       </View>

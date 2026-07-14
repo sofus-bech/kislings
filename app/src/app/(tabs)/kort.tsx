@@ -1,10 +1,12 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 
 import { Stamp, stampCells } from '@/components/stamp';
-import { Eyebrow } from '@/components/ui';
+import { Eyebrow, Serif } from '@/components/ui';
 import { font, palette, radius } from '@/constants/theme';
 import { customer } from '@/data/content';
+import { useAuth } from '@/lib/auth';
 
 function coffeeLine(n: number) {
   if (n >= 10) return '10 af 10 — din næste kaffe er gratis';
@@ -19,6 +21,23 @@ function beanLine(n: number) {
 }
 
 export default function Kort() {
+  const { user } = useAuth();
+  const router = useRouter();
+
+  if (!user) {
+    return (
+      <View style={styles.gate}>
+        <Serif style={styles.gateTitle}>Dit stempelkort</Serif>
+        <Text style={styles.gateText}>
+          log ind for at samle stempler og vise dit kort til baristaen
+        </Text>
+        <Pressable style={styles.gateBtn} onPress={() => router.push('/profil')}>
+          <Text style={styles.gateBtnLabel}>Log ind / opret konto</Text>
+        </Pressable>
+      </View>
+    );
+  }
+
   return (
     <ScrollView
       style={styles.screen}
@@ -28,7 +47,7 @@ export default function Kort() {
 
       <View style={styles.qrSurface}>
         <QRCode
-          value={customer.id}
+          value={user.id}
           size={176}
           color={palette.text}
           backgroundColor={palette.surface}
@@ -105,4 +124,9 @@ const styles = StyleSheet.create({
   cell: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
   status: { color: palette.text, fontFamily: font.sans, fontSize: 13, textAlign: 'center' },
   footer: { color: palette.textDim, fontFamily: font.sans, fontSize: 12, textAlign: 'center', marginTop: 4 },
+  gate: { flex: 1, backgroundColor: palette.bg, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 40 },
+  gateTitle: { fontSize: 28, marginBottom: 12, textAlign: 'center' },
+  gateText: { color: palette.textDim, fontFamily: font.sans, fontSize: 14, lineHeight: 22, textAlign: 'center', marginBottom: 28 },
+  gateBtn: { backgroundColor: palette.gold, borderRadius: 999, paddingVertical: 15, paddingHorizontal: 28 },
+  gateBtnLabel: { color: palette.bg, fontFamily: font.sansSemi, fontSize: 15 },
 });
