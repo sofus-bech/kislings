@@ -3,9 +3,11 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import { Eyebrow, Screen, Serif } from '@/components/ui';
 import { font, palette, radius } from '@/constants/theme';
-import { coffees, guides } from '@/data/content';
+import { useCoffees, useGuides } from '@/lib/live';
 
 export default function Kaffen() {
+  const coffees = useCoffees();
+  const guides = useGuides();
   return (
     <Screen>
       <Serif style={styles.title}>Kaffen</Serif>

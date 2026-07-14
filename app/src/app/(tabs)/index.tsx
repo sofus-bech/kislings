@@ -4,9 +4,12 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Stamp, stampCells } from '@/components/stamp';
 import { Eyebrow, Screen, Serif } from '@/components/ui';
 import { font, palette, radius } from '@/constants/theme';
-import { coffees, customer, news, nextEvent } from '@/data/content';
+import { customer, nextEvent } from '@/data/content';
+import { useCoffees, useNews } from '@/lib/live';
 
 export default function Hjem() {
+  const coffees = useCoffees();
+  const news = useNews();
   const grinder = coffees.find((c) => c.grinder) ?? coffees[0];
   const latest = news[0];
 
