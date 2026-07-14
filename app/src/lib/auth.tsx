@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 
-import { pb } from '@/lib/pb';
+import { authReady, pb } from '@/lib/pb';
 
 export type User = { id: string; email: string; name: string; role?: string } | null;
 
@@ -25,11 +25,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User>(currentUser());
 
   useEffect(() => {
-    // AsyncAuthStore hydrates from storage asynchronously — reflect it and
-    // keep in sync with every login/logout/refresh.
-    setUser(currentUser());
-    const unsub = pb.authStore.onChange(() => setUser(currentUser()));
-    return () => unsub();
+    let active = true;
+    // Wait for the persisted session to load before reflecting it, then keep
+    // in sync with every login/logout/refresh.
+    authReady.then(() => {
+      if (active) setUser(currentUser());
+    });
+    const unsub = pb.authStore.onChange(() => {
+      if (active) setUser(currentUser());
+    });
+    return () => {
+      active = false;
+      unsub();
+    };
   }, []);
 
   const value = useMemo<AuthCtx>(
