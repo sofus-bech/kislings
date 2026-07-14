@@ -39,6 +39,9 @@ export default function RootLayout() {
           contentStyle: { backgroundColor: palette.bg },
         }}>
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="coffee/[id]" />
+        <Stack.Screen name="news/[id]" />
+        <Stack.Screen name="guide/[id]" />
       </Stack>
     </SafeAreaProvider>
   );

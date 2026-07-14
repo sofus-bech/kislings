@@ -1,11 +1,13 @@
 import { Image } from 'expo-image';
-import { StyleSheet, Text, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Eyebrow, Screen, Serif } from '@/components/ui';
 import { font, palette, radius } from '@/constants/theme';
 import { useCoffees, useGuides } from '@/lib/live';
 
 export default function Kaffen() {
+  const router = useRouter();
   const coffees = useCoffees();
   const guides = useGuides();
   return (
@@ -14,7 +16,10 @@ export default function Kaffen() {
 
       <View style={styles.list}>
         {coffees.map((c) => (
-          <View key={c.id} style={styles.coffeeCard}>
+          <Pressable
+            key={c.id}
+            style={styles.coffeeCard}
+            onPress={() => router.push({ pathname: '/coffee/[id]', params: { id: c.id } })}>
             <View style={styles.photo}>
               <Image
                 source={require('@/assets/images/logo-glow.png')}
@@ -28,17 +33,20 @@ export default function Kaffen() {
               <Text style={styles.dim}>{c.origin}</Text>
               <Text style={styles.notes}>{c.notes}</Text>
             </View>
-          </View>
+          </Pressable>
         ))}
       </View>
 
       <Eyebrow style={styles.sectionLabel}>BRYGGUIDES</Eyebrow>
       <View style={styles.guideGrid}>
         {guides.map((g) => (
-          <View key={g.id} style={styles.guideCard}>
+          <Pressable
+            key={g.id}
+            style={styles.guideCard}
+            onPress={() => router.push({ pathname: '/guide/[id]', params: { id: g.id } })}>
             <Serif style={styles.guideName}>{g.name}</Serif>
             <Text style={styles.dim}>{g.meta}</Text>
-          </View>
+          </Pressable>
         ))}
       </View>
     </Screen>

@@ -22,8 +22,19 @@ const mapCoffee = (r: any): Coffee => ({
   origin: [r.origin, r.process].filter(Boolean).join(' · '),
   notes: r.tasting_notes ?? '',
   grinder: !!r.on_grinder,
-  story: r.tasting_notes ?? '',
+  // `description` is a richer story field added later; fall back to notes.
+  story: r.description || r.tasting_notes || '',
 });
+
+// Pull step texts out of the recipe's rich-text `steps` (<li> items).
+function parseSteps(html?: string): { n: string; text: string; time: string }[] {
+  if (!html) return [];
+  return [...html.matchAll(/<li>([\s\S]*?)<\/li>/g)].map((m, i) => ({
+    n: String(i + 1),
+    text: m[1].replace(/<[^>]+>/g, '').trim(),
+    time: '',
+  }));
+}
 
 const mapNews = (r: any): NewsItem => ({
   id: r.id,
@@ -40,7 +51,7 @@ const mapGuide = (r: any): Guide => ({
   dose: r.dose ?? '',
   water: r.water ?? '',
   temp: r.temp ?? '',
-  steps: [],
+  steps: parseSteps(r.steps),
 });
 
 type Opts = { sort?: string; filter?: string };

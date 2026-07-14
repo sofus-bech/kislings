@@ -1,5 +1,6 @@
 import { Image } from 'expo-image';
-import { StyleSheet, Text, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Stamp, stampCells } from '@/components/stamp';
 import { Eyebrow, Screen, Serif } from '@/components/ui';
@@ -8,6 +9,7 @@ import { customer, nextEvent } from '@/data/content';
 import { useCoffees, useNews } from '@/lib/live';
 
 export default function Hjem() {
+  const router = useRouter();
   const coffees = useCoffees();
   const news = useNews();
   const grinder = coffees.find((c) => c.grinder) ?? coffees[0];
@@ -25,15 +27,17 @@ export default function Hjem() {
       </View>
 
       {/* PÅ KVÆRNEN */}
-      <View style={styles.card}>
+      <Pressable
+        style={styles.card}
+        onPress={() => router.push({ pathname: '/coffee/[id]', params: { id: grinder.id } })}>
         <Eyebrow gold>PÅ KVÆRNEN</Eyebrow>
         <Serif style={styles.grinderName}>{grinder.name}</Serif>
         <Text style={styles.dim}>{grinder.origin}</Text>
         <Text style={styles.body}>{grinder.notes}</Text>
-      </View>
+      </Pressable>
 
       {/* condensed loyalty */}
-      <View style={styles.card}>
+      <Pressable style={styles.card} onPress={() => router.push('/kort')}>
         <Eyebrow style={styles.loyaltyLabel}>KAFFE</Eyebrow>
         <View style={styles.loyaltyRow}>
           <View style={styles.miniStamps}>
@@ -43,11 +47,13 @@ export default function Hjem() {
           </View>
           <Text style={styles.dim}>{customer.coffeeStamps} af 10</Text>
         </View>
-      </View>
+      </Pressable>
 
       {/* news */}
       <Eyebrow style={styles.sectionLabel}>NYHEDER</Eyebrow>
-      <View style={styles.newsCard}>
+      <Pressable
+        style={styles.newsCard}
+        onPress={() => router.push({ pathname: '/news/[id]', params: { id: latest.id } })}>
         <View style={styles.newsPhoto}>
           <Image source={require('@/assets/images/logo-glow.png')} style={styles.newsImg} contentFit="cover" />
         </View>
@@ -55,7 +61,7 @@ export default function Hjem() {
           <Serif style={styles.newsTitle}>{latest.title}</Serif>
           <Text style={styles.dim}>{latest.date}</Text>
         </View>
-      </View>
+      </Pressable>
 
       {/* next event */}
       <View style={styles.eventRow}>
